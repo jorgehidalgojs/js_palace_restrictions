@@ -1,0 +1,101 @@
+<?xml version="1.0"?>
+<odoo>
+    <template id="report_protocolo_guia_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Protocolo de Guias</h2>
+                        <h2 style="text-align: center;">
+                            <span t-field="doc.numero"/>
+                        </h2>
+                        <div id="information_1" class="row mt32 mb32">
+                            <div class="col-4 mb-2" t-if="doc.name">
+                                <strong>Nome:</strong>
+                                <p t-field="doc.name"/>
+                            </div>
+                            <div class="col-4 mb-2" t-if="doc.data">
+                                <strong>Data:</strong>
+                                <p t-field="doc.data"/>
+                            </div>
+                        </div>
+                        <div id="information_2" class="row mt32 mb32">
+                            <div class="col-4 mb-2" t-if="doc.user">
+                                <strong>Usuario:</strong>
+                                <p t-field="doc.user"/>
+                            </div>
+                            <div class="col-4 mb-2" t-if="doc.departamento">
+                                <strong>Departamento:</strong>
+                                <p t-field="doc.departamento"/>
+                            </div>
+                        </div>
+                        <h3>Linhas de Picking</h3>
+                        <table class="table table-sm o_main_table" style="font-size: 13px; width: 100%; border-collapse: collapse;" >
+                            <thead style="background-color: #f0f0f0;">
+                                <tr>
+                                    <th style="padding: 5px;">Nr. Picking</th>
+                                    <th style="padding: 5px;">Origem</th>
+                                    <th style="padding: 5px;">Data</th>
+                                    <th style="padding: 5px;">Recebido</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.protocolo_line_ids" t-as="line">
+                                    <tr>
+                                        <td style="padding: 5px;"><span t-esc="line.reference.name"/></td>
+                                        <td style="padding: 5px;"><span t-esc="line.origin"/></td>
+                                        <td style="padding: 5px;"><span t-esc="line.date"/></td>
+                                        <td style="padding: 5px; text-align: center;">
+                                            <t t-if="line.is_received">
+                                                <div style="width: 14px; height: 14px;">
+                                                    <svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                                                        <rect width="14" height="14" stroke="black" fill="white"/>
+                                                        <path d="M3 7 L6 10 L11 3" stroke="black" stroke-width="2" fill="none"/>
+                                                    </svg>
+                                                </div>
+                                            </t>
+                                            <t t-else="">
+                                                <div style="width: 14px; height: 14px;">
+                                                    <svg width="14" height="14" viewBox="0 0 14 14" xmlns="http://www.w3.org/2000/svg">
+                                                        <rect width="14" height="14" stroke="black" fill="white"/>
+                                                    </svg>
+                                                </div>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+                        <div style="margin-top: 40px; font-size: 90%; width: 100%;">
+                            <div style="display: flex; justify-content: space-between; padding: 10px 15px;">
+                                <div>
+                                    <p><strong>Despachado por:</strong></p>
+                                    <t t-if="doc.assinatura_responsavel">
+                                        <img t-att-src="image_data_uri(doc.assinatura_responsavel)" style="max-height: 4cm; max-width: 8cm;"/>
+
+                                    </t>
+<!--                                    <t t-if="not doc.assinatura_responsavel">-->
+<!--                                        <div style="height: 50px; width: 200px; border: 1px solid #000;"></div>-->
+<!--                                    </t>-->
+                                </div>
+                                <div>
+                                    <p><strong>Recebido por:</strong></p>
+                                    <t t-if="doc.assinatura">
+                                        <img t-att-src="image_data_uri(doc.assinatura)" style="max-height: 4cm; max-width: 8cm;"/>
+
+
+                                    </t>
+<!--                                    <t t-if="not doc.assinatura">-->
+<!--                                        <div style="height: 50px; width: 200px; border: 1px solid #000;"></div>-->
+<!--                                    </t>-->
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

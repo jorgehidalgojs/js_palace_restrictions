@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<odoo>
+    <template t-name="sales_contract.report_stock_picking">
+          <t t-call="web.external_layout">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="partner" t-value="o.partner_id or (o.move_lines and o.move_lines[0].partner_id) or False"/>
+                    <div class="page" style="font-size: 95%;">
+                      <div class="text-center">
+                            <h4>Guia de Remessa -- <span t-field="o.name"/> -- Original</h4>
+                      </div>
+                        <div class="text-right" style="margin-bottom: 10px;">
+                            <div t-field="o.move_lines[0].partner_id"
+                                t-options='{"widget": "contact", "fields": ["name"], "no_marker": True, "phone_icons": False}'/>
+                                <span t-field="o.ponto_de_entrega_id"/>
+                            </div>
+
+                        <div class="row mt16 mb16">
+                            <div t-if="o.origin" class="col-6" name="div_origin">
+                                <strong>Pedido:</strong>
+                                <p t-field="o.origin"/>
+                            </div>
+                            <div t-if="o.state" class="col-6" name="div_sched_date">
+                                <strong>Data de Envio:</strong>
+                                <t t-if="o.state == 'done'">
+                                    <p t-field="o.date_done"/>
+                                </t>
+                                <t t-if="o.state != 'done'">
+                                    <p t-field="o.scheduled_date"/>
+                                </t>
+                            </div>
+                        </div>
+                        <t t-set="lines" t-value="o.move_lines"/>
+                        <t t-set="meal_types" t-value="lines.mapped('type_meals_id')"/>
+                        <t t-if="meal_types">
+                            <t t-foreach="meal_types" t-as="meal_type">
+                                <t t-if="meal_type and meal_type.id">
+                                    <table class="table table-sm bordered mt-1" name="stock_move_table" style="font-size: 90%;">
+                                        <thead>
+                                            <tr>
+                                                <th colspan="4"><strong><t t-esc="meal_type.id"/></strong></th>
+                                            </tr>
+                                            <tr>
+                                                <td name="th_sm_product"><strong>Artigo</strong></td>
+                                                <td name="th_sm_quantity"><strong>Entrega</strong></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr t-foreach="lines.filtered(lambda l: l.type_meals_id and l.type_meals_id.id == meal_type.id)" t-as="move">
+                                                <td>
+                                                    <t t-if="move.product_id">
+                                                        <span t-field="move.product_id.name"/>
+                                                        <p t-if="move.description_picking and move.description_picking != move.product_id.name and move.description_picking != move.product_id.display_name">
+                                                            <span t-field="move.description_picking"/>
+                                                        </p>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <span t-field="move.quantity_done"/>
+                                                    <span t-field="move.product_uom.name"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div style="bottom: 0; width: 100%; padding: 15px; text-align: center; font-size: 80%;">
+                                        <strong>Despachado por:</strong> ______________________________________
+                                        <strong>Transportado por:</strong> ______________________________________
+                                        <strong>Recebido por:</strong> ______________________________________
+                                    </div>
+                                </t>
+                            </t>
+                        </t>
+                    </div>
+                </t>
+            </t>
+        </t>
+        <t t-call="web.external_layout">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="partner" t-value="o.partner_id or (o.move_lines and o.move_lines[0].partner_id) or False"/>
+                    <div class="page" style="font-size: 95%;">
+                      <div class="text-center">
+                            <h4>Guia de Remessa -- <span t-field="o.name"/> -- Duplicado</h4>
+
+                      </div>
+                        <div class="text-right" style="margin-bottom: 10px;">
+                            <div t-field="o.move_lines[0].partner_id"
+                                t-options='{"widget": "contact", "fields": ["name"], "no_marker": True, "phone_icons": False}'/>
+                                <span t-field="o.ponto_de_entrega_id"/>
+                            </div>
+                            <div class="row mt16 mb16">
+                                <div t-if="o.origin" class="col-6" name="div_origin">
+                                    <strong>Pedido:</strong>
+                                    <p t-field="o.origin"/>
+                                </div>
+                                <div t-if="o.state" class="col-6" name="div_sched_date">
+                                    <strong>Data de Envio:</strong>
+                                    <t t-if="o.state == 'done'">
+                                        <p t-field="o.date_done"/>
+                                    </t>
+                                    <t t-if="o.state != 'done'">
+                                        <p t-field="o.scheduled_date"/>
+                                    </t>
+                                </div>
+                            </div>
+                            <t t-set="lines" t-value="o.move_lines"/>
+                            <t t-set="meal_types" t-value="lines.mapped('type_meals_id')"/>
+                            <t t-if="meal_types">
+                                <t t-foreach="meal_types" t-as="meal_type">
+                                    <t t-if="meal_type and meal_type.id">
+                                        <table class="table table-sm bordered mt-1" name="stock_move_table" style="font-size: 90%;">
+                                            <thead>
+                                                <tr>
+                                                    <th colspan="4"><strong><t t-esc="meal_type.name"/></strong></th>
+                                                </tr>
+                                                <tr>
+                                                    <td name="th_sm_product"><strong>Artigo</strong></td>
+                                                    <td name="th_sm_quantity"><strong>Entrega</strong></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr t-foreach="lines.filtered(lambda l: l.type_meals_id and l.type_meals_id.id == meal_type.id)" t-as="move">
+                                                    <td>
+                                                        <t t-if="move.product_id">
+                                                            <span t-field="move.product_id.name"/>
+                                                            <p t-if="move.description_picking and move.description_picking != move.product_id.name and move.description_picking != move.product_id.display_name">
+                                                                <span t-field="move.description_picking"/>
+                                                            </p>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <span t-field="move.quantity_done"/>
+                                                        <span t-field="move.product_uom.name"/>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <div style="bottom: 0; width: 100%; padding: 15px; text-align: center; font-size: 80%;">
+                                            <strong>Despachado por:</strong> ______________________________________
+                                            <strong>Transportado por:</strong> ______________________________________
+                                            <strong>Recebido por:</strong> ______________________________________
+                                        </div>
+                                    </t>
+                                </t>
+                            </t>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+</odoo>
+
