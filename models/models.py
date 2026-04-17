@@ -1,7 +1,10 @@
+import logging
+
 from odoo import models, _
 from odoo.exceptions import UserError
 from odoo.tools.float_utils import float_compare
 
+_logger = logging.getLogger(__name__)
 
 
 class StockMove(models.Model):
@@ -22,7 +25,10 @@ class StockMove(models.Model):
 
         # Permitir cambios internos de Odoo durante la validación
         if self._is_internal_picking_validation():
-
+            _logger.info(
+                "STOCK MOVE WRITE ALLOWED DURING PICKING VALIDATION | move_ids=%s | vals=%s | context=%s",
+                self.ids, vals, self.env.context
+            )
             return super().write(vals)
 
         if 'product_uom_qty' in vals:
@@ -40,7 +46,16 @@ class StockMove(models.Model):
                         precision_rounding=move.product_uom.rounding
                     )
 
-
+                    _logger.info(
+                        "STOCK MOVE WRITE CHECK | move_id=%s | picking_id=%s | state=%s | current=%s | new=%s | comparison=%s | vals=%s",
+                        move.id,
+                        move.picking_id.id,
+                        move.picking_id.state,
+                        current_qty,
+                        new_qty,
+                        comparison,
+                        vals,
+                    )
 
                     if comparison != 0:
                         raise UserError(_(
